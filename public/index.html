@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Chatbot AI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{
+font-family:Arial;
+background:#f2f2f2;
+margin:0;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+#container{
+width:420px;
+height:600px;
+background:white;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+display:flex;
+flex-direction:column;
+}
+
+#header{
+background:#10a37f;
+color:white;
+padding:15px;
+font-size:20px;
+text-align:center;
+border-radius:10px 10px 0 0;
+}
+
+#chat{
+flex:1;
+overflow-y:auto;
+padding:15px;
+}
+
+.msg{
+margin-bottom:12px;
+line-height:1.4;
+}
+
+.user{
+color:#2563eb;
+}
+
+.ai{
+color:#16a34a;
+}
+
+#inputArea{
+display:flex;
+border-top:1px solid #ddd;
+}
+
+#msg{
+flex:1;
+border:none;
+padding:12px;
+font-size:14px;
+outline:none;
+}
+
+button{
+width:80px;
+border:none;
+background:#10a37f;
+color:white;
+cursor:pointer;
+}
+
+button:hover
+
+.loading{
+color:#999;
+font-style:italic;
+} </style>
+
+</head>
+
+<body>
+
+<div id="container">
+
+<div id="header">
+Chatbot AI
+</div>
+
+<div id="chat"></div>
+
+<div id="inputArea">
+<input id="msg" placeholder="Nhập câu hỏi..." />
+<button onclick="send()">Gửi</button>
+</div>
+
+</div>
+
+<script>
+
+const chat=document.getElementById("chat")
+const msgInput=document.getElementById("msg")
+
+msgInput.addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+send()
+}
+})
+
+function addMessage(text,className){
+const div=document.createElement("div")
+div.className="msg "+className
+div.innerText=text
+chat.appendChild(div)
+chat.scrollTop=chat.scrollHeight
+}
+
+async function send(){
+
+const msg=msgInput.value.trim()
+
+if(!msg) return
+
+addMessage("Bạn: "+msg,"user")
+
+msgInput.value=""
+
+const loading=document.createElement("div")
+loading.className="msg loading"
+loading.innerText="AI đang suy nghĩ..."
+chat.appendChild(loading)
+
+chat.scrollTop=chat.scrollHeight
+
+try{
+
+const r=await fetch("/chat",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({message:msg})
+})
+
+const d=await r.json()
+
+loading.remove()
+
+addMessage("AI: "+d.reply,"ai")
+
+}catch(err){
+
+loading.remove()
+
+addMessage("AI: Lỗi kết nối","ai")
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
