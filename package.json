@@ -1,0 +1,12 @@
+{
+  "name": "vpp-ai-champions",
+  "version": "1.0.0",
+  "description": "VPP AI Champions – Chatbot cá nhân hóa học sinh",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
